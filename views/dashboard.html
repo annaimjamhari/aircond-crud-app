@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirCond CRUD - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar { width: 240px; }
+        .main-content { margin-left: 240px; }
+        @media (max-width: 768px) {
+            .sidebar { width: 64px; }
+            .main-content { margin-left: 64px; }
+        }
+        .stat-card { transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-4px); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <nav class="sidebar fixed h-full bg-white shadow-lg flex flex-col">
+        <div class="p-6 border-b">
+            <h2 class="text-xl font-bold text-blue-700">AirCond CRUD</h2>
+            <p class="text-sm text-gray-500">Management Platform</p>
+        </div>
+
+        <div class="flex-1 p-4 space-y-2">
+            <a href="/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-50 text-blue-600 font-medium">
+                <i class="fas fa-tachometer-alt"></i>
+                <span class="hidden md:inline">Dashboard</span>
+            </a>
+            <a href="/customers" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-users"></i>
+                <span class="hidden md:inline">Customers</span>
+            </a>
+            <a href="/services" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-tools"></i>
+                <span class="hidden md:inline">Services</span>
+            </a>
+            <a href="/inventory" class="flex items center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-boxes"></i>
+                <span class="hidden md:inline">Inventory</span>
+            </a>
+            <a href="/reports" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-chart-bar"></i>
+                <span class="hidden md:inline">Reports</span>
+            </a>
+        </div>
+
+        <div class="p-4 border-t">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-blue-600"></i>
+                </div>
+                <div class="hidden md:block">
+                    <p class="font-medium">Admin</p>
+                    <p class="text-sm text-gray-500">Administrator</p>
+                </div>
+            </div>
+            <button onclick="logout()" class="mt-4 w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg">
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                <span class="hidden md:inline">Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content p-6">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
+            <p class="text-gray-600">Welcome back, Admin. Here’s what’s happening today.</p>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card bg-white p-6 rounded-xl shadow border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Total Customers</p>
+                        <p class="text-3xl font-bold text-gray-800" id="stat-customers">--</p>
+                    </div>
+                    <div class="p-3 bg-blue-100 text-blue-600 rounded-full">
+                        <i class="fas fa-users text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card bg-white p-6 rounded-xl shadow border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Pending Services</p>
+                        <p class="text-3xl font-bold text-gray-800" id="stat-pending">--</p>
+                    </div>
+                    <div class="p-3 bg-yellow-100 text-yellow-600 rounded-full">
+                        <i class="fas fa-clock text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card bg-white p-6 rounded-xl shadow border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Revenue (RM)</p>
+                        <p class="text-3xl font-bold text-gray-800" id="stat-revenue">--</p>
+                    </div>
+                    <div class="p-3 bg-green-100 text-green-600 rounded-full">
+                        <i class="fas fa-money-bill-wave text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card bg-white p-6 rounded-xl shadow border border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Low Stock Items</p>
+                        <p class="text-3xl font-bold text-gray-800" id="stat-lowstock">--</p>
+                    </div>
+                    <div class="p-3 bg-red-100 text-red-600 rounded-full">
+                        <i class="fas fa-exclamation-triangle text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl shadow p-6">
+            <h2 class="text-xl font-bold mb-4">Recent Service Bookings</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3">Customer</th>
+                            <th class="px-4 py-3">Service Type</th>
+                            <th class="px-4 py-3">Scheduled Date</th>
+                            <th class="px-4 py-3">Status</th>
+                            <th class="px-4 py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentServices">
+                        <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">Loading recent services...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadStats() {
+            const res = await fetch('/api/stats');
+            const stats = await res.json();
+            document.getElementById('stat-customers').textContent = stats.customers || 0;
+            document.getElementById('stat-pending').textContent = stats.pending || 0;
+            document.getElementById('stat-revenue').textContent = stats.revenue ? 'RM ' + stats.revenue.toFixed(2) : 'RM 0.00';
+            document.getElementById('stat-lowstock').textContent = stats.low_stock || 0;
+        }
+
+        async function loadRecentServices() {
+            const res = await fetch('/api/services?limit=5');
+            const services = await res.json();
+            const tbody = document.getElementById('recentServices');
+            tbody.innerHTML = services.map(s => `
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-4 py-3 font-medium text-gray-900">${s.customer_name}</td>
+                    <td class="px-4 py-3">${s.service_type}</td>
+                    <td class="px-4 py-3">${new Date(s.scheduled_date).toLocaleDateString()}</td>
+                    <td class="px-4 py-3"><span class="px-3 py-1 rounded-full text-xs ${statusColor(s.status)}">${s.status}</span></td>
+                    <td class="px-4 py-3">
+                        <button onclick="editService(${s.id})" class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteService(${s.id})" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function statusColor(status) {
+            const colors = {
+                pending: 'bg-yellow-100 text-yellow-800',
+                in_progress: 'bg-blue-100 text-blue-800',
+                completed: 'bg-green-100 text-green-800',
+                cancelled: 'bg-red-100 text-red-800'
+            };
+            return colors[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        async function logout() {
+            await fetch('/logout');
+            window.location.href = '/login';
+        }
+
+        // Load on start
+        loadStats();
+        loadRecentServices();
+    </script>
+</body>
+</html>
