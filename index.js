@@ -19,10 +19,11 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Database setup
-const db = new sqlite3.Database('./db/aircond.db', (err) => {
+// Database setup - use /tmp directory on Vercel for write access
+const dbPath = process.env.VERCEL ? '/tmp/aircond.db' : './db/aircond.db';
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) console.error('DB error:', err);
-    else console.log('Connected to SQLite database.');
+    else console.log(`Connected to SQLite database at ${dbPath}`);
 });
 
 // Initialize schema
