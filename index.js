@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS service_history (
 
 -- Insert default admin user (password: admin123)
 INSERT OR IGNORE INTO users (username, password_hash, full_name, role)
-VALUES ('admin', '$2a$10$3K0D/4v8a2yVQ6d6Kv6b/eX0qLZ8N8Q5h9V5g9V8v5j8kLmN0bV9cX8zLmN0bV9cX8zLmN0bV9cX8z', 'System Administrator', 'admin');
+VALUES ('admin', '$2b$10$.2XQDThTJSKpl6/.IZvIy.f3KMuWJLfUilNU.6cucQwYDOtze0AlW', 'System Administrator', 'admin');
 
 -- Insert sample inventory
 INSERT OR IGNORE INTO inventory (name, part_number, category, stock, unit_price, supplier)
